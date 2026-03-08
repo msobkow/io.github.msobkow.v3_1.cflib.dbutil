@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns="http://msobkow.github.io/msobkow/v3_1/xsd/cflibdbutil-3.1.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://msobkow.github.io/msobkow/v3_1/xsd/cflibdbutil-3.1.xsd" version="3.1">
+<xsd:schema xmlns="http://mcf.markhome.server/mcf/v3_1/xsd/cflibdbutil-3.1.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://mcf.markhome.server/mcf/v3_1/xsd/cflibdbutil-3.1.xsd" version="3.1">
 
 <xsd:annotation>
     <xsd:documentation xml:lang="en">

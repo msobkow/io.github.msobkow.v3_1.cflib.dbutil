@@ -27,7 +27,7 @@
  *	for a commercial license at mark.sobkow@gmail.com
  */
 
-package io.github.msobkow.v3_1.cflib.dbutil;
+package server.markhome.mcf.v3_1.cflib.dbutil;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
@@ -46,12 +46,12 @@ import jakarta.persistence.Embeddable;
  * @author msobkow
  */
 @Embeddable
-public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> implements Serializable {
+public class CFLibDbKeyHash384 extends CFLibDbKeyHashBase<CFLibDbKeyHash384> implements Serializable {
 
-  static final long serialVersionUID = 202505131740L;
-  static final public  int HASH_LENGTH = 16; // md5 hash size
-  static final public int HASH_LENGTH_STRING = HASH_LENGTH * 2; // md5 hash size as a string
-  static final String HASH_ALGO = "MD5";
+  static final long serialVersionUID = 202505162237L;
+  static final public  int HASH_LENGTH = 48; // hash size in bytes
+  static final public int HASH_LENGTH_STRING = HASH_LENGTH * 2; // SHA-1 hash size as a string
+  static final String HASH_ALGO = "SHA-384";
 
   @Override
   public int getHashLength() {
@@ -91,6 +91,7 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     }
   }
   
+  // @Convert(converter = CFLibDbKeyHash384Converter.class)
   @Column(name = "bytes", nullable = false)
   protected byte[] bytes;
 
@@ -113,78 +114,55 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     return b;
   }
 
-  public static CFLibDbKeyHash128 fromHex(String string) {
+  public static CFLibDbKeyHash384 fromHex(String string) {
     byte[] b = sbytesFromHex(string);
-    CFLibDbKeyHash128 h = new CFLibDbKeyHash128();
+    CFLibDbKeyHash384 h = new CFLibDbKeyHash384();
     h.bytes = b;
     return h;
   }
 
-  public static Comparator<CFLibDbKeyHash128> getComparator() {
+  public static Comparator<CFLibDbKeyHash384> getComparator() {
 
-    return new Comparator<CFLibDbKeyHash128>() {
+    return new Comparator<CFLibDbKeyHash384>() {
       @Override
-      public int compare(CFLibDbKeyHash128 a, CFLibDbKeyHash128 b) {
+      public int compare(CFLibDbKeyHash384 a, CFLibDbKeyHash384 b) {
         return compareOrdered(a, b);
       }
     };
   }
 
-  public CFLibDbKeyHash128() {
+  public CFLibDbKeyHash384() {
+    super();
   }
 
   /**
    * This is the hex code of the underlying ID. THIS IS NOT A HASHING FUNCTION.
    */
-  public CFLibDbKeyHash128(String hexId) {
+  public CFLibDbKeyHash384(String hexId) {
     super(hexId);
   }
 
-  public CFLibDbKeyHash128(byte[] anId) {
+  public CFLibDbKeyHash384(byte[] anId) {
     super(anId);
   }
 
-  public CFLibDbKeyHash128(CFLibDbKeyHash128 otherKey) {
+  public CFLibDbKeyHash384(CFLibDbKeyHash384 otherKey) {
     super(otherKey);
   }
 
-  public CFLibDbKeyHash128(CFLibDbKeyHash160 k) {
-    bytes = new byte[HASH_LENGTH];
-    if (k != null) {
-      System.arraycopy(k.getBytes(), 0, bytes, 0, HASH_LENGTH);
+  public CFLibDbKeyHash384(CFLibDbKeyHash512 otherKey) {
+    super();
+    if (otherKey == null) {
+      bytes = new byte[HASH_LENGTH];
+      return;
     }
+    byte[] _newId = new byte[HASH_LENGTH];
+    System.arraycopy(otherKey.getBytes(), 0, _newId, 0, HASH_LENGTH);
+    this.bytes = _newId;
   }
 
-  public CFLibDbKeyHash128(CFLibDbKeyHash224 k) {
-    bytes = new byte[HASH_LENGTH];
-    if (k != null) {
-      System.arraycopy(k.getBytes(), 0, bytes, 0, HASH_LENGTH);
-    }
-  }
-
-  public CFLibDbKeyHash128(CFLibDbKeyHash256 k) {
-    bytes = new byte[HASH_LENGTH];
-    if (k != null) {
-      System.arraycopy(k.getBytes(), 0, bytes, 0, HASH_LENGTH);
-    }
-  }
-
-  public CFLibDbKeyHash128(CFLibDbKeyHash384 k) {
-    bytes = new byte[HASH_LENGTH];
-    if (k != null) {
-      System.arraycopy(k.getBytes(), 0, bytes, 0, HASH_LENGTH);
-    }
-  }
-
-  public CFLibDbKeyHash128(CFLibDbKeyHash512 k) {
-    bytes = new byte[HASH_LENGTH];
-    if (k != null) {
-      System.arraycopy(k.getBytes(), 0, bytes, 0, HASH_LENGTH);
-    }
-  }
-
-  public static CFLibDbKeyHash128 fromInt(int v) {
-    CFLibDbKeyHash128 h = nullGet();
+  public static CFLibDbKeyHash384 fromInt(int v) {
+    CFLibDbKeyHash384 h = nullGet();
     h.bytes[3] = (byte) (v & 0xFF);
     h.bytes[2] = (byte) ((v >> 8) & 0xFF);
     h.bytes[1] = (byte) ((v >> 16) & 0xFF);
@@ -192,14 +170,15 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     return h;
   }
 
-  public CFLibDbKeyHash128(int notUsed) {
+  public CFLibDbKeyHash384(int notUsed) {
     super(notUsed);
   }
 
-  public static final boolean isNull(CFLibDbKeyHash128 anId) {
+  public static final boolean isNull(CFLibDbKeyHash384 anId) {
     return anId == null || anId.isNull();
   }
 
+  @Override
   public byte[] getBytes() {
     return bytes;
   }
@@ -207,14 +186,14 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
   /**
    * Get a new hash object with the key set to all 0s
    */
-  static public CFLibDbKeyHash128 nullGet() {
-    CFLibDbKeyHash128 k = new CFLibDbKeyHash128();
+  static public CFLibDbKeyHash384 nullGet() {
+    CFLibDbKeyHash384 k = new CFLibDbKeyHash384();
     k.bytes = new byte[HASH_LENGTH];
     return k;
   }
 
   static public String getNullString() {
-    return "00000000000000000000000000000000";
+    return "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
   }
 
   /**
@@ -240,7 +219,7 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
       System.arraycopy(newBytes, offset, bytes, 0, Math.min(HASH_LENGTH,length));
   }
 
-  static public int compareOrdered(CFLibDbKeyHash128 h1, CFLibDbKeyHash128 h2) {
+  static public int compareOrdered(CFLibDbKeyHash384 h1, CFLibDbKeyHash384 h2) {
     if (h1 == null) {
       if (h2 == null) {
         return 0;
@@ -265,61 +244,61 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     return 0;
   }
 
-  public static CFLibDbKeyHash128 hash(String text) {
+  public static CFLibDbKeyHash384 hash(String text) {
     if (text != null) {
       try {
         MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
         byte[] buf = text.getBytes("UTF-8");
         md.update(buf);
 
-        return new CFLibDbKeyHash128(md.digest());
+        return new CFLibDbKeyHash384(md.digest());
       }
       catch (Exception ex) {
       }
     }
-    return new CFLibDbKeyHash128(0);
+    return new CFLibDbKeyHash384(0);
   }
 
-  public static CFLibDbKeyHash128 hash(byte[] payload) {
+  public static CFLibDbKeyHash384 hash(byte[] payload) {
     try {
       MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
       md.update(payload);
 
-      return new CFLibDbKeyHash128(md.digest());
+      return new CFLibDbKeyHash384(md.digest());
     }
     catch (Exception ex) {
     }
-    return new CFLibDbKeyHash128(0);
+    return new CFLibDbKeyHash384(0);
   }
 
-  public static CFLibDbKeyHash128 hash(byte[]... payload) {
+  public static CFLibDbKeyHash384 hash(byte[]... payload) {
     try {
       MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
       for (byte[] bs : payload) {
         md.update(bs);
       }
 
-      return new CFLibDbKeyHash128(md.digest());
+      return new CFLibDbKeyHash384(md.digest());
     }
     catch (Exception ex) {
     }
-    return new CFLibDbKeyHash128(0);
+    return new CFLibDbKeyHash384(0);
   }
 
-  public static CFLibDbKeyHash128 hash(CFLibDbKeyHash128... payload) {
+  public static CFLibDbKeyHash384 hash(CFLibDbKeyHash384... payload) {
     try {
       MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
-      for (CFLibDbKeyHash128 k : payload) {
+      for (CFLibDbKeyHash384 k : payload) {
         md.update(k.bytes);
       }
-      return new CFLibDbKeyHash128(md.digest());
+      return new CFLibDbKeyHash384(md.digest());
     }
     catch (Exception ex) {
     }
-    return new CFLibDbKeyHash128(0);
+    return new CFLibDbKeyHash384(0);
   }
 
-  public static CFLibDbKeyHash128 hash(int[] payload) {
+  public static CFLibDbKeyHash384 hash(int[] payload) {
     try {
       MessageDigest md = MessageDigest.getInstance(HASH_ALGO);
       for (int x : payload) {
@@ -329,19 +308,19 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
         md.update((byte) (x & 255));
       }
 
-      return new CFLibDbKeyHash128(md.digest());
+      return new CFLibDbKeyHash384(md.digest());
     }
     catch (Exception ex) {
     }
-    return new CFLibDbKeyHash128(0);
+    return new CFLibDbKeyHash384(0);
   }
 
   @Override
-  public CFLibDbKeyHash128 deepClone() {
-    return new CFLibDbKeyHash128(this);
+  public CFLibDbKeyHash384 deepClone() {
+    return new CFLibDbKeyHash384(this);
   }
 
-  static public CFLibDbKeyHash128 fromHexQuick(String string) {
+  static public CFLibDbKeyHash384 fromHexQuick(String string) {
     if (string == null) {
       return null;
     }
@@ -367,21 +346,21 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     }
   }
 
-  public static final CFLibDbKeyHash128[] toCFLibDbKeyHash128(String[] ids) {
+  public static final CFLibDbKeyHash384[] toCFLibDbKeyHash384(String[] ids) {
     if (ids == null) {
       return null;
     }
     if (ids.length == 0) {
-      return new CFLibDbKeyHash128[0];
+      return new CFLibDbKeyHash384[0];
     }
-    CFLibDbKeyHash128[] r = new CFLibDbKeyHash128[ids.length];
+    CFLibDbKeyHash384[] r = new CFLibDbKeyHash384[ids.length];
     for (int i = 0; i < ids.length; i++) {
-      r[i] = new CFLibDbKeyHash128(ids[i]);
+      r[i] = new CFLibDbKeyHash384(ids[i]);
     }
     return r;
   }
 
-  public static final List<CFLibDbKeyHash128> toCFLibDbKeyHash128List(String[] ids) {
+  public static final List<CFLibDbKeyHash384> toCFLibDbKeyHash384List(String[] ids) {
 
     if (ids == null) {
       return null;
@@ -389,15 +368,15 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     if (ids.length == 0) {
       return Collections.emptyList();
     }
-    List<CFLibDbKeyHash128> r = new ArrayList<CFLibDbKeyHash128>(ids.length);
+    List<CFLibDbKeyHash384> r = new ArrayList<CFLibDbKeyHash384>(ids.length);
     for (int i = 0; i < ids.length; i++) {
-      r.add(new CFLibDbKeyHash128(ids[i]));
+      r.add(new CFLibDbKeyHash384(ids[i]));
     }
     return r;
 
   }
 
-  public static final Set<CFLibDbKeyHash128> toCFLibDbKeyHash128Set(String[] ids) {
+  public static final Set<CFLibDbKeyHash384> toCFLibDbKeyHash384Set(String[] ids) {
 
     if (ids == null) {
       return null;
@@ -405,9 +384,9 @@ public class CFLibDbKeyHash128 extends CFLibDbKeyHashBase<CFLibDbKeyHash128> imp
     if (ids.length == 0) {
       return Collections.emptySet();
     }
-    Set<CFLibDbKeyHash128> r = new HashSet<CFLibDbKeyHash128>(ids.length);
+    Set<CFLibDbKeyHash384> r = new HashSet<CFLibDbKeyHash384>(ids.length);
     for (int i = 0; i < ids.length; i++) {
-      r.add(new CFLibDbKeyHash128(ids[i]));
+      r.add(new CFLibDbKeyHash384(ids[i]));
     }
     return r;
 

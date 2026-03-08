@@ -27,7 +27,7 @@
  *	for a commercial license at mark.sobkow@gmail.com
  */
 
-package io.github.msobkow.v3_1.cflib.dbutil;
+package server.markhome.mcf.v3_1.cflib.dbutil;
 
 import java.util.*;
 

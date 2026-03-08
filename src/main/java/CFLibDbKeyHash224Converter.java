@@ -27,9 +27,9 @@
  *	for a commercial license at mark.sobkow@gmail.com
  */
 
-// package io.github.msobkow.v3_1.cflib.dbutil;
+// package server.markhome.mcf.v3_1.cflib.dbutil;
 
-import io.github.msobkow.v3_1.cflib.dbutil.CFLibDbKeyHash224;
+import server.markhome.mcf.v3_1.cflib.dbutil.CFLibDbKeyHash224;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

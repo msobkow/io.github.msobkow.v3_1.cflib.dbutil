@@ -27,11 +27,11 @@
  *	for a commercial license at mark.sobkow@gmail.com
  */
 
-//package io.github.msobkow.v3_1.cflib.dbutil;
+//package server.markhome.mcf.v3_1.cflib.dbutil;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import io.github.msobkow.v3_1.cflib.dbutil.CFLibDbKeyHash256;
+import server.markhome.mcf.v3_1.cflib.dbutil.CFLibDbKeyHash256;
 
 @Converter(autoApply = true)
 public class CFLibDbKeyHash256Converter implements AttributeConverter<CFLibDbKeyHash256, byte[]> {
