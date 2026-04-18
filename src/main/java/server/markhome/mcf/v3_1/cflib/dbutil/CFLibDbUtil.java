@@ -67,7 +67,7 @@ public class CFLibDbUtil {
 			int absMinutes = ( minutesOnly < 0 ) ? ( 0 - minutesOnly ) : minutesOnly;
 			int minutes = absMinutes % 60;
 			int hours = absMinutes / 60;
-			StringBuffer buff = new StringBuffer();
+			StringBuilder buff = new StringBuilder();
 			Formatter fmt = new Formatter( buff );
 			if( minutesOnly < 0 ) {
 				buff.append( "GMT-" );
